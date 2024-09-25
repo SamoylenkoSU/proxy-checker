@@ -1,0 +1,38 @@
+{# templates/default/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Report from {{ report.createdAt | date('Y-m-d') }}</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <td>IP:PORT</td>
+                <td>IS ACTIVE</td>
+                <td>COUNTRY</td>
+                <td>CITY</td>
+                <td>EXTERNAL IP</td>
+                <td>TYPE</td>
+                <td>TIMEOUT</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% for proxy in report.proxies  %}
+            {% if (proxy.checked) %}
+            <tr>
+                <td>{{ proxy.value }}</td>
+                <td>{{ proxy.active ? 'yes' : 'no' }}</td>
+                <td>{{ proxy.country }}</td>
+                <td>{{ proxy.city }}</td>
+                <td>{{ proxy.externalIp }}</td>
+                {% if (proxy.type is null) %}
+                    <td></td>
+                {% else %}
+                    <td>{{ proxy.type.name }}</td>
+                {% endif %}
+                <td>{{ proxy.timeout }}</td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

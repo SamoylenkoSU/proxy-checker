@@ -1,0 +1,6 @@
+# phpstorm project files
+.idea
+
+# docker-compose env file
+/.env
+/docker/db/

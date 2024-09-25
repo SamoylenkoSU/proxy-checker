@@ -1,0 +1,29 @@
+framework:
+    messenger:
+        # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
+        # failure_transport: failed
+
+        transports:
+            # https://symfony.com/doc/current/messenger.html#transport-configuration
+            # async: '%env(MESSENGER_TRANSPORT_DSN)%'
+            # failed: 'doctrine://default?queue_name=failed'
+            # sync: 'sync://'
+
+            proxy_handling:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    auto_setup: true
+                    exchange:
+                        name: proxy_handling_exchange
+                    queues:
+                        proxy_handling_queue:
+                            arguments:
+                                x-message-ttl: 600000
+
+        routing:
+            # Route your messages to the transports
+            App\Messenger\Messages\CheckProxyMessage: proxy_handling
+
+        buses:
+            messenger.bus.default:
+                default_middleware: true

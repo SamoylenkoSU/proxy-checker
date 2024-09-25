@@ -1,0 +1,50 @@
+version: '3'
+services:
+  php:
+    build: ./docker/php
+    domainname: ${DOMAIN_NAME:-proxy-checker.loc}
+    volumes:
+      - ${PWD}/backend:/backend:rw
+      - ~/.composer:/www-data/.composer
+    links:
+      - mysql
+    networks:
+      - backend
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - ${WEB_PORT:-80}:80
+    volumes:
+      - ${PWD}/backend:/backend:rw
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - php
+    networks:
+      - backend
+    environment:
+      - NGINX_HOST=${DOMAIN_NAME:-proxy-checker.loc}
+
+  mysql:
+    image: "${IMAGE_DB_TAG:-mysql:5.7}"
+    ports:
+      - ${DB_PORT:-3309}:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD:-sHn2R8SDst9737Lz}
+      - MYSQL_DATABASE=${DB_NAME:-db_proxy_checker}
+    volumes:
+      - ./docker/db:/var/lib/mysql
+    networks:
+      - backend
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 15672:15672
+    expose:
+      - 5672
+    networks:
+      - backend
+
+networks:
+  backend:

@@ -1,0 +1,35 @@
+{# templates/default/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <form action="/report" method="POST">
+        <h1>Proxy checker</h1>
+        <div class="mb-3">
+            <label class="form-label">Proxies</label>
+            <textarea name="proxies" class="form-control" cols="15"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <br/>
+    <br/>
+    <br/>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <td>ID</td>
+                <td>DATE</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports  %}
+                <tr>
+                    <td>{{ report.id }}</td>
+                    <td>{{ report.createdAt | date('Y-m-d') }}</td>
+                    <td><a href="{{ path('report_info', {'id': report.id}) }}" class="btn btn-primary">open</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
