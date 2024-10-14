@@ -1,0 +1,37 @@
+FROM php:8.2-fpm
+
+RUN apt-get update && apt-get install -y \
+    htop \
+    curl \
+    wget \
+    git \
+    libzip-dev \
+    zip
+
+RUN apt-get install -y python3-launchpadlib software-properties-common \
+    && add-apt-repository ppa:ondrej/php \
+    && apt-get update
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+RUN apt-get install -y php8.2-dev protobuf-compiler protobuf-compiler-grpc  \
+    && pecl channel-update pecl.php.net \
+    && pecl -d php_suffix=8.2 install grpc \
+    && pecl -d php_suffix=8.2 install protobuf \
+    && docker-php-ext-enable grpc protobuf
+
+RUN apt-get install bazel \
+    && bazel build @com_google_protobuf//:protoc \
+    && bazel build src/compiler:grpc_php_plugin
+
+RUN docker-php-ext-install zip pdo pdo_mysql
+
+RUN docker-php-source extract \
+    && mkdir /usr/src/php/ext/amqp \
+    && curl -L https://github.com/php-amqp/php-amqp/archive/master.tar.gz | tar -xzC /usr/src/php/ext/amqp --strip-components=1 \
+    && apt-get update && apt-get install -y librabbitmq-dev \
+    && docker-php-ext-install amqp
+
+WORKDIR /backend
+
+CMD ["php-fpm"]

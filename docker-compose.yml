@@ -5,7 +5,7 @@ services:
     domainname: ${DOMAIN_NAME:-proxy-checker.loc}
     volumes:
       - ${PWD}/backend:/backend:rw
-      - ~/.composer:/www-data/.composer
+      - ${SPECIFICATION_PATH}:/specification:rw
     links:
       - mysql
     networks:
@@ -48,3 +48,4 @@ services:
 
 networks:
   backend:
+    name: proxy-checker-net

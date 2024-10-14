@@ -1,0 +1,77 @@
+FROM php:8.3-fpm-alpine
+
+RUN apk update \
+    && apk upgrade \
+    && apk add linux-headers \
+    && apk add --no-cache bash gcc make g++ zlib-dev \
+    && apk add --no-cache libzip-dev zlib-dev zip curl autoconf
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+RUN docker-php-ext-install zip pdo pdo_mysql
+
+# TODO: найти лучше способ интеграции grpc и protobuf (данныей вариант слишком долго собирается)
+
+RUN apk add --no-cache grpc \
+    && MAKEFLAGS="-j $(nproc)" pecl install grpc \
+    && docker-php-ext-enable grpc
+
+RUN apk add --no-cache --virtual .build-deps \
+        $PHPIZE_DEPS \
+        linux-headers \
+    && mkdir -p /tmp/pear/cache \
+    && apk add --update --no-cache \
+        openssl-dev \
+        cmake \
+        libunwind \
+        libunwind-dev \
+        pcre-dev \
+        icu-dev \
+        icu-data-full \
+        libzip-dev \
+        git \
+        go \
+    # Утилита "protoc" и официальный плагин генерации клиентского кода "grpc_php_plugin"
+    && mkdir /build && cd /build \
+    && git clone --recursive -b v1.66.x https://github.com/grpc/grpc \
+    && mkdir -p /build/grpc/cmake/build && cd /build/grpc/cmake/build \
+    && cmake ../.. \
+    && make protoc grpc_php_plugin \
+    # Плагин генерации серверного кода "protoc-gen-php-grpc" от roadrunner
+#    && cd /build \
+#    && composer create-project --ignore-platform-reqs spiral/roadrunner-cli \
+#    && chmod +x ./roadrunner-cli/bin/rr \
+#    && ./roadrunner-cli/bin/rr download-protoc-binary -l /usr/bin \
+    && cp /build/grpc/cmake/build/grpc_php_plugin /usr/bin \
+    && cp /build/grpc/cmake/build/third_party/protobuf/protoc /usr/bin \
+#    && chmod +x /usr/bin/protoc-gen-php-grpc \
+    && chmod +x /usr/bin/grpc_php_plugin \
+    && chmod +x /usr/bin/protoc \
+    # Очистка
+    && rm -rf /build \
+    && pecl clear-cache \
+    && apk del --purge .build-deps
+
+#RUN apk add --no-cache protobuf \
+#    && pecl install protobuf \
+#    && docker-php-ext-enable protobuf
+#
+#
+#RUN apk add --no-cache git cmake \
+#    && mkdir /build && cd /build \
+#    && git clone --depth 1 -b v1.67.0 https://github.com/grpc/grpc \
+#    && cd grpc && git submodule update --init  \
+#    && mkdir /build/grpc/cmake/build && cd /build/grpc/cmake/build  \
+#    && cmake ../.. && make grpc_php_plugin \
+#    && cp /build/grpc/cmake/build/grpc_php_plugin /usr/bin \
+#    && chmod +x /usr/bin/grpc_php_plugin
+
+RUN docker-php-source extract \
+    && mkdir /usr/src/php/ext/amqp \
+    && curl -L https://github.com/php-amqp/php-amqp/archive/master.tar.gz | tar -xzC /usr/src/php/ext/amqp --strip-components=1 \
+    && apk add --no-cache rabbitmq-c-dev \
+    && docker-php-ext-install amqp
+
+WORKDIR /backend
+
+CMD ["php-fpm"]
