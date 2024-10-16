@@ -3,19 +3,20 @@
 namespace App\Messenger\Dispatcher;
 
 use App\Entity\Proxy;
-use App\Messenger\Messages\CheckProxyMessage;
+use App\Entity\Report;
+use App\Messenger\Messages\BuildProxyReportMessage;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class CheckProxyDispatcher
+class ProxyReportDispatcher
 {
     public function __construct(
         private MessageBusInterface $messageBus,
     ) {
     }
 
-    public function dispatch(Proxy $proxy): void
+    public function dispatch(Report $proxy): void
     {
-        $message = new CheckProxyMessage(
+        $message = new BuildProxyReportMessage(
             $proxy->getId()
         );
 

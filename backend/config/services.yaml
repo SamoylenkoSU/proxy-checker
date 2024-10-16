@@ -20,5 +20,13 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Service\ProxyChecker\ProxyCheckerClientFactory:
+        arguments:
+            $serviceUrl: '%env(PROXY_CHECKER_SERVICE_URL)%'
+
+    ProxyCheckerApi\ProxyCheckerClient:
+        factory: '@App\Service\ProxyChecker\ProxyCheckerClientFactory'

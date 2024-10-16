@@ -2,7 +2,7 @@
 
 namespace App\Messenger\Handler;
 
-use App\Messenger\Messages\CheckProxyMessage;
+use App\Messenger\Messages\BuildProxyReportMessage;
 use App\Service\ProxyCheckReport\ProxyCheckerFacade;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
@@ -14,7 +14,7 @@ class CheckProxyHandler
     ) {
     }
 
-    public function __invoke(CheckProxyMessage $message): void
+    public function __invoke(BuildProxyReportMessage $message): void
     {
         $this->proxyChecker->check($message->id);
     }

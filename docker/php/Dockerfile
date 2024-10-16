@@ -1,4 +1,4 @@
-FROM	ubuntu:22.04
+FROM	ubuntu:24.04
 
 ENV     DEBIAN_FRONTEND         noninteractive
 
@@ -6,11 +6,9 @@ RUN     apt-get update && apt-get install -qqy \
 		software-properties-common \
 		unzip \
 		curl \
-        make
-
-RUN		LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
-
-RUN     apt-get update && apt-get install -qqy \
+        make \
+        && LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php \
+        && apt-get update && apt-get install -qqy \
 		php8.2-cli \
 		php8.2-fpm \
 		php8.2-mbstring \
@@ -18,12 +16,13 @@ RUN     apt-get update && apt-get install -qqy \
 		php8.2-zip \
 		php8.2-curl \
 		php8.2-xml \
-        php8.2-amqp
-
-RUN     apt-get update &&  apt-get install -y default-jre
-RUN     apt-get upgrade -y
-
-RUN     apt-get install -y php8.2-dev php8.2-grpc php8.2-protobuf protobuf-compiler protobuf-compiler-grpc
+        php8.2-amqp \
+        php8.2-dev  \
+        php8.2-grpc  \
+        protobuf-compiler  \
+        protobuf-compiler-grpc \
+        default-jre \
+        && apt-get update && apt-get upgrade -y
 
 COPY    --from=composer:2 /usr/bin/composer /usr/bin/composer
 

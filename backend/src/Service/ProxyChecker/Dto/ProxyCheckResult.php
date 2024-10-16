@@ -7,6 +7,7 @@ use App\Entity\Enum\ProxyType;
 readonly class ProxyCheckResult
 {
     public function __construct(
+        public string $value,
         public bool $active,
         public ?ProxyType $type = null,
         public ?string $country = null,

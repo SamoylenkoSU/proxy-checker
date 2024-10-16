@@ -4,14 +4,14 @@ namespace App\Service\ProxyCheckReport;
 
 use App\Entity\Proxy;
 use App\Entity\Report;
-use App\Messenger\Dispatcher\CheckProxyDispatcher;
+use App\Messenger\Dispatcher\ProxyReportDispatcher;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ProxyReportCreator
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private CheckProxyDispatcher $checkProxyDispatcher,
+        private ProxyReportDispatcher  $proxyReportDispatcher,
     ) {
     }
 
@@ -34,11 +34,8 @@ class ProxyReportCreator
         }
 
         $this->entityManager->flush();
-        $this->entityManager->refresh($report);
 
-        foreach ($report->getProxies() as $proxy) {
-            $this->checkProxyDispatcher->dispatch($proxy);
-        }
+        $this->proxyReportDispatcher->dispatch($report);
 
         return $report;
     }

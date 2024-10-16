@@ -2,7 +2,7 @@
 
 namespace App\Messenger\Messages;
 
-readonly class CheckProxyMessage
+readonly class BuildProxyReportMessage
 {
     public function __construct(
         public int $id
