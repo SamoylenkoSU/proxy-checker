@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\ReportRepository;
@@ -20,9 +22,7 @@ class Report
     #[ORM\Column]
     private DateTimeImmutable $createdAt;
 
-    /**
-     * @var Collection<int, Proxy>
-     */
+    /** @var Collection<int, Proxy> */
     #[ORM\OneToMany(targetEntity: Proxy::class, mappedBy: 'report')]
     private Collection $proxies;
 

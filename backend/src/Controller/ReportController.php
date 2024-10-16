@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Service\ProxyCheckReport\ProxyReportCreator;
@@ -14,14 +16,14 @@ class ReportController extends AbstractController
     public function __construct(
         private ProxyReportCreator $reportCreator,
         private ProxyReportProvider $reportProvider,
-        private UrlGeneratorInterface $urlGenerator
+        private UrlGeneratorInterface $urlGenerator,
     ) {
     }
 
     public function index(): Response
     {
         return $this->render('main.html.twig', [
-            'reports' => $this->reportProvider->getList()
+            'reports' => $this->reportProvider->getList(),
         ]);
     }
 
@@ -30,7 +32,7 @@ class ReportController extends AbstractController
         $report = $this->reportProvider->getReport($id);
 
         return $this->render('report.html.twig', [
-            'report' => $report
+            'report' => $report,
         ]);
     }
 
@@ -38,12 +40,12 @@ class ReportController extends AbstractController
     {
         $proxies = $request->request->get('proxies', '');
 
-        $report = $this->reportCreator->create(explode(PHP_EOL, str_replace(array("\r\n", "\r"), PHP_EOL, $proxies)));
+        $report = $this->reportCreator->create(explode(PHP_EOL, str_replace(["\r\n", "\r"], PHP_EOL, $proxies)));
 
         return $this->redirect(
-            $this->urlGenerator->generate('report_info',[
-                'id' => $report->getId()
-            ])
+            $this->urlGenerator->generate('report_info', [
+                'id' => $report->getId(),
+            ]),
         );
     }
 }

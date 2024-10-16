@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\ProxyCheckReport;
 
 use App\Entity\Proxy;
@@ -12,7 +14,7 @@ class ProxyCheckerFacade
     public function __construct(
         private ReportRepository $reportRepository,
         private ProxyCheckerInterface $proxyChecker,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -21,15 +23,15 @@ class ProxyCheckerFacade
         $report = $this->reportRepository->find($report);
 
         $proxies = array_map(
-            fn(Proxy $proxy) => $proxy->getValue(),
-            $report->getProxies()->toArray()
+            fn (Proxy $proxy) => $proxy->getValue(),
+            $report->getProxies()->toArray(),
         );
 
         $checkResult = $this->proxyChecker->check($proxies);
 
         foreach ($checkResult as $item) {
             $proxy = $report->getProxies()->findFirst(
-                fn(int $index, Proxy $element) => $element->getValue() === $item->value
+                fn (int $index, Proxy $element) => $element->getValue() === $item->value,
             );
 
             if (is_null($proxy)) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\ProxyChecker\Dto;
 
 use App\Entity\Enum\ProxyType;
@@ -13,7 +15,7 @@ readonly class ProxyCheckResult
         public ?string $country = null,
         public ?string $city = null,
         public ?string $externalIp = null,
-        public ?float $timeout = null
+        public ?float $timeout = null,
     ) {
     }
 }

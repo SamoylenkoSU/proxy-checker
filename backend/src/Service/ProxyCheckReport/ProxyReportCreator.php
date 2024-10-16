@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\ProxyCheckReport;
 
 use App\Entity\Proxy;
@@ -11,12 +13,12 @@ class ProxyReportCreator
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private ProxyReportDispatcher  $proxyReportDispatcher,
+        private ProxyReportDispatcher $proxyReportDispatcher,
     ) {
     }
 
     /**
-     * @param string[] $proxies
+     * @param array<string> $proxies
      */
     public function create(array $proxies): Report
     {
@@ -27,7 +29,7 @@ class ProxyReportCreator
         foreach ($proxies as $proxy) {
             $proxy = new Proxy(
                 $report,
-                $proxy
+                $proxy,
             );
 
             $this->entityManager->persist($proxy);

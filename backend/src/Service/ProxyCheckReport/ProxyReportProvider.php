@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\ProxyCheckReport;
 
 use App\Entity\Report;
 use App\Repository\ReportRepository;
+use Exception;
 
 class ProxyReportProvider
 {
     public function __construct(
-        private ReportRepository $reportRepository
+        private ReportRepository $reportRepository,
     ) {
     }
 
@@ -17,15 +20,14 @@ class ProxyReportProvider
         $report = $this->reportRepository->find($id);
 
         if (is_null($report)) {
-            throw new \Exception('Report not found');
+            throw new Exception('Report not found');
         }
 
         return $report;
     }
 
-
     /**
-     * @return Report[]
+     * @return array<Report>
      */
     public function getList(): array
     {

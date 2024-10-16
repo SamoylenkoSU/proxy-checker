@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\ProxyChecker;
 
 use ProxyCheckerApi\ProxyCheckerClient;
@@ -7,7 +9,7 @@ use ProxyCheckerApi\ProxyCheckerClient;
 class ProxyCheckerClientFactory
 {
     public function __construct(
-        private readonly string $serviceUrl
+        private readonly string $serviceUrl,
     ) {
     }
 

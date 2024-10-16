@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Messenger\Handler;
 
 use App\Messenger\Messages\BuildProxyReportMessage;
@@ -10,7 +12,7 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 class CheckProxyHandler
 {
     public function __construct(
-        private ProxyCheckerFacade $proxyChecker
+        private ProxyCheckerFacade $proxyChecker,
     ) {
     }
 
