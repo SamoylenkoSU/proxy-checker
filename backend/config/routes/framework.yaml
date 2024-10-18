@@ -2,19 +2,3 @@ when@dev:
     _errors:
         resource: '@FrameworkBundle/Resources/config/routing/errors.xml'
         prefix: /_error
-
-main:
-    path: /
-    controller: App\Controller\ReportController::index
-
-report_create:
-    path: /report
-    controller: App\Controller\ReportController::create
-    methods: [POST]
-
-report_info:
-    path: /report/{id}
-    requirements:
-        id: '\d+'
-    controller: App\Controller\ReportController::info
-    methods: [GET]

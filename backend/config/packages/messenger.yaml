@@ -22,7 +22,7 @@ framework:
 
         routing:
             # Route your messages to the transports
-            App\Messenger\Messages\BuildProxyReportMessage: proxy_handling
+            App\Application\BuildReport\Dto\BuildReportCommand: proxy_handling
 
         buses:
             messenger.bus.default:

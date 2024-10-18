@@ -16,17 +16,17 @@ services:
     App\:
         resource: '../src/'
         exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Entity/'
-            - '../src/Kernel.php'
+            - '../src/Infrastructure/DependencyInjection/'
+            - '../src/Domain/Entity/'
+            - '../src/Infrastructure/Kernel.php'
 
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    App\Service\ProxyChecker\ProxyCheckerClientFactory:
+    App\Infrastructure\Http\ProxyChecker\ProxyCheckerClientFactory:
         arguments:
             $serviceUrl: '%env(PROXY_CHECKER_SERVICE_URL)%'
 
     ProxyCheckerApi\ProxyCheckerClient:
-        factory: '@App\Service\ProxyChecker\ProxyCheckerClientFactory'
+        factory: '@App\Infrastructure\Http\ProxyChecker\ProxyCheckerClientFactory'
